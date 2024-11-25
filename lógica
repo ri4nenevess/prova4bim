@@ -1,0 +1,142 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h> // Para a função sleep()
+
+int bateria = 100;
+int creditos = 10;
+char operadora[] = "Vivo";
+char mensagens[10][100] = {"Oi, como vai?", "Parabéns!"};
+int num_mensagens = 2;
+char historico[10][50] = {"Maria - 5 segundos", "João - 5 segundos"};
+int num_historico = 2;
+char agenda[10][50] = {"Ana - 123456789", "Carlos - 987654321"};
+int num_contatos = 2;
+
+void reduzir_bateria() {
+    bateria -= 1;
+    if (bateria < 0) bateria = 0;
+}
+
+void realizar_ligacao() {
+    if (creditos < 2) {
+        printf("\nVocê não tem créditos suficientes para realizar uma ligação.\n");
+        return;
+    }
+    char nome[50];
+    printf("\n--- Realizar Ligação ---\n");
+    printf("Digite o nome do destinatário: ");
+    scanf(" %[^\n]s", nome);
+    printf("Ligando para %s...\n", nome);
+    sleep(5); // Simula 5 segundos de ligação
+    printf("Ligação encerrada.\n");
+
+    snprintf(historico[num_historico], 50, "%s - 5 segundos", nome);
+    num_historico++;
+    reduzir_bateria();
+    creditos -= 2;
+}
+
+void ver_bateria() {
+    printf("\n--- Nível de Bateria ---\n");
+    printf("Bateria: %d%%\n", bateria);
+    printf("Previsão de duração: %d minutos\n", bateria * 5);
+}
+
+void ver_mensagens() {
+    printf("\n--- Mensagens ---\n");
+    for (int i = 0; i < num_mensagens; i++) {
+        printf("%d. %s\n", i + 1, mensagens[i]);
+    }
+}
+
+void ver_historico() {
+    printf("\n--- Histórico de Ligações ---\n");
+    for (int i = 0; i < num_historico; i++) {
+        printf("%d. %s\n", i + 1, historico[i]);
+    }
+}
+
+void agenda_contatos() {
+    printf("\n--- Agenda ---\n");
+    for (int i = 0; i < num_contatos; i++) {
+        printf("%d. %s\n", i + 1, agenda[i]);
+    }
+    printf("\n1. Adicionar contato\n2. Voltar ao menu inicial\n");
+    int opcao;
+    scanf("%d", &opcao);
+    if (opcao == 1) {
+        char nome[50], telefone[15];
+        printf("Digite o nome do contato: ");
+        scanf(" %[^\n]s", nome);
+        printf("Digite o telefone do contato: ");
+        scanf(" %[^\n]s", telefone);
+        snprintf(agenda[num_contatos], 50, "%s - %s", nome, telefone);
+        num_contatos++;
+        printf("Contato adicionado com sucesso.\n");
+    }
+}
+
+void ver_operadora() {
+    printf("\n--- Operadora ---\n");
+    printf("Sua operadora é: %s\n", operadora);
+}
+
+void ver_creditos() {
+    printf("\n--- Créditos ---\n");
+    printf("Você tem %d créditos.\n", creditos);
+    printf("Pode enviar %d mensagens ou realizar %d ligações.\n", creditos, creditos / 2);
+}
+
+void menu_inicial() {
+    while (1) {
+        printf("\n--- Sistema Operacional ---\n");
+        printf("1. Ver nível de bateria\n");
+        printf("2. Mensagens\n");
+        printf("3. Histórico de ligação\n");
+        printf("4. Realizar ligação\n");
+        printf("5. Agenda\n");
+        printf("6. Créditos\n");
+        printf("7. Operadora\n");
+        printf("8. Sair\n");
+        printf("Escolha uma opção: ");
+        int opcao;
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                ver_bateria();
+                break;
+            case 2:
+                ver_mensagens();
+                break;
+            case 3:
+                ver_historico();
+                break;
+            case 4:
+                realizar_ligacao();
+                break;
+            case 5:
+                agenda_contatos();
+                break;
+            case 6:
+                ver_creditos();
+                break;
+            case 7:
+                ver_operadora();
+                break;
+            case 8:
+                printf("Saindo do sistema...\n");
+                exit(0);
+            default:
+                printf("Opção inválida! Tente novamente.\n");
+        }
+        sleep(1); // Simula a passagem de tempo
+        reduzir_bateria();
+    }
+}
+
+int main() {
+    menu_inicial();
+    return 0;
+}
